@@ -4,15 +4,17 @@
 			<view class="mask" @click.stop.prevent="close">
 
 			</view>
-			<view class="popup" :style="wrapperStyle">
+			<view class="popup">
 				<view class="overlay" @click.stop.prevent="close"></view>
 				<view class="popup-content">
-					<view class="item" v-for="(item,index) in options" v-if="shows[index]">
-						<view class="dropdown-item__title" @click.stop.prevent="toggle(index,index2,option.value)"
-							v-for="(option,index2) in item">
-							<text>{{option.text}}</text>
-						</view>
+					<view class="popup-list">
+						<view class="item" v-for="(item,index) in options" v-if="shows[index]">
+							<view class="dropdown-item__title" @click.stop.prevent="toggle(index,index2,option.value)"
+								v-for="(option,index2) in item">
+								<text>{{option.text}}</text>
+							</view>
 
+						</view>
 					</view>
 
 
@@ -23,8 +25,7 @@
 
 		<view class="dropdown-menu">
 			<view class="dropdown-menu__bar" ref="bar">
-				<view class="dropdown-menu__title" v-for="(item,index) in value"
-					@click.stop.prevent="toggleItem(index)">
+				<view class="dropdown-menu__title" v-for="(item,index) in value" @click.stop="toggleItem(index,$event)">
 					<text>{{item}}</text>
 				</view>
 			</view>
@@ -84,7 +85,9 @@
 			})
 		},
 		methods: {
-			toggleItem(active) {
+			toggleItem(active, event) {
+				event.stopPropagation()
+
 				this.updateOffset()
 				console.log(this.shows);
 				this.shows.map((show, index) => {
@@ -135,7 +138,7 @@
 		computed: {
 			wrapperStyle() {
 				return {
-					top: this.offset + "rpx",
+					top: this.offset + "px",
 				};
 			},
 		}
@@ -145,8 +148,8 @@
 <style lang="scss" scoped>
 	.dropdown {
 		position: relative;
-
-
+		width: 750rpx;
+		height: 50px;
 	}
 
 	.dropdown-item {
@@ -158,7 +161,14 @@
 
 	}
 
+	.dropdown-menu {
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+
 	.dropdown-menu__bar {
+
 		flex-direction: row;
 		justify-content: space-around;
 		padding-top: 20rpx;
@@ -180,7 +190,8 @@
 
 
 	.popup,
-	.overlay {
+	.overlay,
+	.popup-content {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -191,6 +202,11 @@
 	}
 
 	.popup-content {
+
+		overflow: auto;
+	}
+
+	.popup-list {
 		background-color: #fff;
 	}
 
