@@ -1,162 +1,225 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<!-- Created by Tw93 on 16/10/25. -->
+<!--A popup box with customized contents.-->
+
 <template>
-  <view>
-    <overlay
-      :show="show"
-      :z-index="zIndex"
-      :customStyle="overlayStyle"
-      :duration="duration"
-      @click="onClickOverlay"
-    />
-    <view
-      v-if="show"
-      class="popup"
-      :class="['custom-class', position, round]"
-      :style="[{ zIndex }, customStyle]"
-      @touchmove.stop.prevent="noop"
-      @tap.stop.prevent="noop"
-    >
-      <slot />
-    </view>
-  </view>
+	<view>
+		<view @touchend="handleTouchEnd">
+			<wxc-overlay :show="haveOverlay && isOverShow" v-if="show" ref="overlay" v-bind="overlayCfg"
+				@wxcOverlayBodyClicking="wxcOverlayBodyClicking" :top="top"></wxc-overlay>
+		</view>
+		<view ref="wxc-popup" v-if="show" :height="_height" :hack="isNeedShow" @click="()=>{}"
+			:class="['wxc-popup', pos]" :style="padStyle">
+			<slot></slot>
+		</view>
+
+	</view>
 </template>
 
-<script>
-import overlay from "../overlay";
+<style scoped>
+	.wxc-popup {
+		position: fixed;
+		width: 750px;
+	}
 
-export default {
-  components: { overlay },
-  props: {
-    round: Boolean,
-    closeable: Boolean,
-    customStyle: String,
-    overlayStyle: String,
-    transition: {
-      type: String,
-    },
-    zIndex: {
-      type: Number,
-      default: 100,
-    },
-    overlay: {
-      type: Boolean,
-      default: true,
-    },
-    closeIcon: {
-      type: String,
-      default: "cross",
-    },
-    closeIconPosition: {
-      type: String,
-      default: "top-right",
-    },
-    closeOnClickOverlay: {
-      type: Boolean,
-      default: true,
-    },
-    position: {
-      type: String,
-      default: "center",
-    },
-    safeAreaInsetBottom: {
-      type: Boolean,
-      default: true,
-    },
-    safeAreaInsetTop: {
-      type: Boolean,
-      default: false,
-    },
-    lockScroll: {
-      type: Boolean,
-      default: true,
-    },
-    show: {
-      type: Boolean,
-      default: false,
-    },
-    duration: {
-      type: Number,
-      default: 300,
-    },
-  },
-  mounted() {
-    console.log(this.customStyle, "customStyle");
-  },
-  methods: {
-    beforeEnter() {
-      this.$emit("beforeEnter");
-    },
-    enter() {
-      this.$emit("enter");
-    },
-    afterEnter() {
-      this.$emit("afterEnter");
-    },
 
-    enterCancelled() {
-      this.$emit("enterCancelled");
-    },
-    beforeLeave() {
-      this.$emit("beforeLeave");
-    },
-    leave() {
-      this.$emit("leave");
-    },
-    afterLeave() {
-      this.$emit("afterLeave");
-    },
-    leaveCancelled() {
-      this.$emit("leaveCancelled");
-    },
+	.top {
+		left: 0;
+		right: 0;
+	}
 
-    onClickCloseIcon() {
-      this.$emit("close");
-    },
+	.bottom {
+		left: 0;
+		right: 0;
+	}
 
-    onClickOverlay() {
-      this.$emit("click-overlay");
+	.left {
+		bottom: 0;
+		top: 0;
+	}
 
-      if (this.closeOnClickOverlay) {
-        this.$emit("close");
-      }
-    },
-    // for prevent touchmove
-    noop() {},
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-.popup {
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  max-height: 100%;
-  overflow-y: auto;
-  transition-timing-function: ease;
-  animation: ease both;
-  -webkit-overflow-scrolling: touch;
-  background-color: var(--popup-background-color, #fff);
-
-  transition-timing-function: ease;
-  transition-duration: 0.3s;
-  transition-property: transform;
-
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-
-  &.round {
-    border-radius: 20rpx;
-  }
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  transform: translateY(-100%);
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  transform: translateY(0);
-}
+	.right {
+		bottom: 0;
+		top: 0;
+	}
 </style>
+
+<script>
+	const animation = weex.requireModule('animation');
+	import WxcOverlay from '../overlay/index.vue';
+
+	export default {
+		components: {
+			WxcOverlay
+		},
+		props: {
+			show: {
+				type: Boolean,
+				default: false
+			},
+			pos: {
+				type: String,
+				default: 'bottom'
+			},
+			popupColor: {
+				type: String,
+				default: '#FFFFFF'
+			},
+			overlayCfg: {
+				type: Object,
+				default: () => ({
+					hasAnimation: true,
+					timingFunction: ['ease-in', 'ease-out'],
+					duration: 300,
+					opacity: 0.6
+				})
+			},
+			height: {
+				type: [Number, String],
+				default: 840
+			},
+			standOut: {
+				type: [Number, String],
+				default: 0
+			},
+			width: {
+				type: [Number, String],
+				default: 750
+			},
+			animation: {
+				type: Object,
+				default: () => ({
+					timingFunction: 'ease-in'
+				})
+			},
+			top: {
+				type: [Number, String],
+				default: 0
+			}
+		},
+		data: () => ({
+			haveOverlay: true,
+			isOverShow: true
+		}),
+		computed: {
+			isNeedShow() {
+				setTimeout(() => {
+					this.appearPopup(this.show);
+				}, 50);
+				return this.show;
+			},
+			_height() {
+				this.appearPopup(this.show, 150);
+				return this.height;
+			},
+			padStyle() {
+				const {
+					pos,
+					width,
+					height,
+					popupColor,
+					standOut,
+					top
+				} = this;
+				const stand = parseInt(standOut, 10);
+				let style = {
+					width: `${width}px`,
+					backgroundColor: popupColor
+				};
+				pos === 'top' && (style = {
+					...style,
+					top: `${-height + stand+top}px`,
+					height: `${height}px`
+				});
+				pos === 'bottom' && (style = {
+					...style,
+					bottom: `${-height + stand}px`,
+					height: `${height}px`
+				});
+				pos === 'left' && (style = {
+					...style,
+					left: `${-width + stand}px`
+				});
+				pos === 'right' && (style = {
+					...style,
+					right: `${-width + stand}px`
+				});
+				return style;
+			}
+		},
+		methods: {
+			handleTouchEnd(e) {
+				// 在支付宝上面有点击穿透问题
+				const {
+					platform
+				} = weex.config.env;
+				platform === 'Web' && e.preventDefault && e.preventDefault();
+			},
+			hide() {
+				this.appearPopup(false);
+				this.$refs.overlay.appearOverlay(false);
+			},
+			wxcOverlayBodyClicking() {
+				this.isShow && this.appearPopup(false);
+			},
+			appearPopup(bool, duration = 300) {
+				this.isShow = bool;
+				const popupEl = this.$refs['wxc-popup'];
+				if (!popupEl) {
+					return;
+				}
+				animation.transition(popupEl, {
+					styles: {
+						transform: this.getTransform(this.pos, this.width, this.height, !bool)
+					},
+					duration,
+					delay: 0,
+					...this.animation
+				}, () => {
+					if (!bool) {
+						this.$emit('wxcPopupOverlayClicked', {
+							pos: this.pos
+						});
+					}
+				});
+			},
+			getTransform(pos, width, height, bool) {
+				let _size = pos === 'top' || pos === 'bottom' ? height : width;
+				bool && (_size = 0);
+				let _transform;
+				switch (pos) {
+					case 'top':
+						_transform = `translateY(${_size}px)`;
+						break;
+					case 'bottom':
+						_transform = `translateY(-${_size}px)`;
+						break;
+					case 'left':
+						_transform = `translateX(${_size}px)`;
+						break;
+					case 'right':
+						_transform = `translateX(-${_size}px)`;
+						break;
+				}
+				return _transform;
+			}
+		}
+	}
+</script>

@@ -1,17 +1,18 @@
 <template>
 	<view class="dropdown">
 		<view class="dropdown-item" v-if="showWrapper" :style="wrapperStyle">
-			<view class="mask" @click.stop.prevent="close">
+			<view class="mask" @click.stop.prevent="close" :style="maskStyle">
 
 			</view>
 			<view class="popup">
+
 				<view class="overlay" @click.stop.prevent="close"></view>
 				<view class="popup-content">
 					<view class="popup-list">
 						<view class="item" v-for="(item,index) in options" v-if="shows[index]">
 							<view class="dropdown-item__title" @click.stop.prevent="toggle(index,index2,option.value)"
 								v-for="(option,index2) in item">
-								<text>{{option.text}}</text>
+								<text :style="textColor(value[index]===option.value)">{{option.text}}</text>
 							</view>
 
 						</view>
@@ -26,7 +27,7 @@
 		<view class="dropdown-menu">
 			<view class="dropdown-menu__bar" ref="bar">
 				<view class="dropdown-menu__title" v-for="(item,index) in value" @click.stop="toggleItem(index,$event)">
-					<text>{{item}}</text>
+					<text :style="textColor(index===active)">{{displayTitle(index,item)}}</text>
 				</view>
 			</view>
 		</view>
@@ -35,48 +36,33 @@
 
 <script>
 	export default {
+		props: {
+			options: {
+				type: Array,
+				default () {
+					return []
+				}
+			},
+			value: {
+				type: Array,
+				default () {
+					return []
+				}
+			},
+			activeColor:{
+				type:String,
+				default:'red'
+			}
+		},
 		data() {
 			return {
-				options: [
-					[{
-							text: "a",
-							value: "a",
-						},
-						{
-							text: "b",
-							value: "b",
-						},
-						{
-							text: "c",
-							value: "c",
-						},
-						{
-							text: "d",
-							value: "d",
-						},
-					],
-					[{
-							text: "4e324",
-							value: "4324",
-						},
-						{
-							text: "23432",
-							value: "2344b",
-						},
-						{
-							text: "432",
-							value: "32432",
-						},
-						{
-							text: "d43242",
-							value: "4324d",
-						},
-					]
-				],
-				shows: [false, false],
-				value: ['adsa', 'dsadsa'],
+			
+				shows: [],
+				
 				showWrapper: false,
-				offset: 0
+				offset: 0,
+				barReact: {},
+				active:''
 			}
 		},
 		mounted() {
@@ -84,16 +70,49 @@
 				this.updateOffset()
 			})
 		},
+		created() {
+			this.createShowArr()
+		},
 		methods: {
+			textColor(bool) {
+				if(bool) {
+					return {
+						color:this.activeColor
+					}
+				}
+				return {}
+			},
+			createShowArr() {
+				this.options.map(item => {
+					this.shows.push(false)
+				})
+			},
+			displayTitle(index,value) {
+				const options = this.options[index]
+				console.log(this.options);
+				if(!options) return
+				const option = options.find(item => item.value === value)
+				if(option) {
+					return option.text
+				} else {
+					return options[0]?options[0].text : ''
+				}
+			},
 			toggleItem(active, event) {
 				event.stopPropagation()
 
 				this.updateOffset()
-				console.log(this.shows);
+			
 				this.shows.map((show, index) => {
 					const shows = this.shows
 					if (index === active) {
 						shows.splice(index, 1, !show)
+						if(!show) {
+							this.active = active
+						} else {
+							this.active = ''
+						}
+
 					} else if (show) {
 						shows.splice(index, 1, false)
 					}
@@ -120,13 +139,14 @@
 				const dom = uni.requireNativePlugin("dom");
 
 				dom.getComponentRect(this.$refs.bar, (res) => {
-					console.log(res);
+					this.barReact = res.size || {}
 					this.offset = res.size.bottom;
 				});
 			},
 			noop() {},
 			close() {
 				this.showWrapper = false
+				this.active = ''
 				const shows = []
 				this.shows.map(item => {
 					shows.push(false)
@@ -141,6 +161,12 @@
 					top: this.offset + "px",
 				};
 			},
+			maskStyle() {
+				console.log(this.barReact);
+				return {
+					height: this.barReact.top + "px"
+				}
+			}
 		}
 	}
 </script>

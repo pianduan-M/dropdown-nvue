@@ -1,97 +1,168 @@
 <template>
-  <div class="test">
-<!--    <dorpdown-menu>
+	<view class="test">
+		<!--    <dorpdown-menu>
       <dorpdown-item :options="options" v-model="value"></dorpdown-item>
       <dorpdown-item :options="options2" v-model="value2"></dorpdown-item>
     </dorpdown-menu> -->
+		<popup :show="show" pos="top" :top="200" :height="50" @wxcPopupOverlayClicked="show=false"></popup>
+		<dorpdown style="margin-top:100px" :options="optionsArr" v-model="values"></dorpdown>
 
-	<dorpdown style="margin-top:100px"></dorpdown>
-  </div>
+		<view v-for="item in 2" v-if="show1" style="position:absolute;width:750rpx;height:100px;background-color:red;top:150px;z-index:2222;" @click="handleClick">
+			<text>打开</text> </view>
+	</view>
 </template>
 
 <script>
-import dorpdownItem from "../components/src/dorpdown-item/index.vue";
-import dorpdownMenu from "../components/src/dropdown-menu/index.vue";
-import popup from "../components/popup/index.vue";
-import dorpdown from './dorpdown.vue'
+	import dorpdownItem from "../components/src/dorpdown-item/index.vue";
+	import dorpdownMenu from "../components/src/dropdown-menu/index.vue";
+	import popup from "../components/popup/index.vue";
+	import dorpdown from './dorpdown.vue'
 
-export default {
-  components: { dorpdownMenu, dorpdownItem, popup,dorpdown },
-  data() {
-    return {
-      title: "Hello",
-      show: false,
-      options: [
-        {
-          text: "a",
-          value: "a",
-        },
-        {
-          text: "b",
-          value: "b",
-        },
-        {
-          text: "c",
-          value: "c",
-        },
-        {
-          text: "d",
-          value: "d",
-        },
-      ],
-      options2: [
-        {
-          text: "4e324",
-          value: "4324",
-        },
-        {
-          text: "23432",
-          value: "2344b",
-        },
-        {
-          text: "432",
-          value: "32432",
-        },
-        {
-          text: "d43242",
-          value: "4324d",
-        },
-      ],
-      value: "a",
-      value2: "4324d",
-    };
-  },
-  mounted() {
-    const dom = uni.requireNativePlugin("dom");
-    console.log(dom.getComponentRect);
-  },
-  methods: {
-    testa() {
-      console.log("zhixingle");
-      const query = uni.createSelectorQuery();
-      query
-        .in(this)
-        .select(".test")
-        .boundingClientRect()
-        .exec((res) => {
-          console.log(res, "createSelectorQuery");
-        });
-    },
-  },
-};
+	export default {
+		components: {
+			dorpdownMenu,
+			dorpdownItem,
+			popup,
+			dorpdown
+		},
+		data() {
+			return {
+				title: "Hello",
+				show: false,
+				show1:true,
+				options: [{
+						text: "a",
+						value: "a",
+					},
+					{
+						text: "b",
+						value: "b",
+					},
+					{
+						text: "c",
+						value: "c",
+					},
+					{
+						text: "d",
+						value: "d",
+					},
+				],
+				options2: [{
+						text: "4e324",
+						value: "4324",
+					},
+					{
+						text: "23432",
+						value: "2344b",
+					},
+					{
+						text: "432",
+						value: "32432",
+					},
+					{
+						text: "d43242",
+						value: "4324d",
+					},
+				],
+				value: "a",
+				value2: "4324d",
+				values:['a','4324','541654'],
+				optionsArr: [
+					[{
+							text: "a",
+							value: "a",
+						},
+						{
+							text: "b",
+							value: "b",
+						},
+						{
+							text: "c",
+							value: "c",
+						},
+						{
+							text: "d",
+							value: "d",
+						},
+					],
+					[{
+							text: "4e324",
+							value: "4324",
+						},
+						{
+							text: "23432",
+							value: "2344b",
+						},
+						{
+							text: "432",
+							value: "32432",
+						},
+						{
+							text: "d43242",
+							value: "4324d",
+						},
+					],
+					[{
+							text: "4e324",
+							value: "4324",
+						},
+						{
+							text: "23432",
+							value: "2344b",
+						},
+						{
+							text: "432",
+							value: "32432",
+						},
+						{
+							text: "d43242",
+							value: "4324d",
+						},
+					],
+					
+				],
+			};
+		},
+		mounted() {
+			const dom = uni.requireNativePlugin("dom");
+			console.log(dom.getComponentRect);
+		},
+		methods: {
+			testa() {
+				console.log("zhixingle");
+				const query = uni.createSelectorQuery();
+				query
+					.in(this)
+					.select(".test")
+					.boundingClientRect()
+					.exec((res) => {
+						console.log(res, "createSelectorQuery");
+					});
+			},
+			handleClick() {
+				console.log('zhixingle');
+				this.show = true
+			}
+		},
+		watch:{
+			values(newValue) {
+				console.log(newValue);
+			}
+		}
+	};
 </script>
 
 <style>
-.test {
-  height: 2000px;
-}
+	.test {
+		height: 2000px;
+	}
 
-.mask {
-  position: absolute;
-  top: 500rpx;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: red;
-}
+	.mask {
+		position: absolute;
+		top: 500rpx;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: red;
+	}
 </style>
