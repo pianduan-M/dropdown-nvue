@@ -1,81 +1,102 @@
 <template>
-	<view class="content ">
-	 <dorpdown-menu>
-	 
-	 		<dorpdown-item :options="options" :value="value" ></dorpdown-item>
-	 		<dorpdown-item :options="options" :value="value" ></dorpdown-item>
-	 </dorpdown-menu>
-	</view>
+  <view class="content">
+    <dorpdown-menu>
+      <dorpdown-item :options="options" v-model="value"></dorpdown-item>
+      <dorpdown-item :options="options2" v-model="value2"></dorpdown-item>
+    </dorpdown-menu>
+    
+    <navigator
+      url="/pages/test"
+      open-type="navigate"
+      hover-class="none">
+      test
+    </navigator>
+  </view>
 </template>
 
 <script>
-	import overlay from '../../components/overlay'
-	import popup from '../../components/popup'
-	import DorpdownItem from '../../components/dorpdown-item'
-	import DorpdownMenu from '../../components/dropdown-menu'
 
+import popup from "../../components/popup";
 
-	export default {
-		components:{popup,DorpdownMenu,DorpdownItem},
-		data() {
-			return {
-				title: 'Hello',
-				show:false,
-				options:[
-					{
-						text:'a',
-						value:'a'
-					},
-					{
-						text:'b',
-						value:'b'
-					},
-					{
-						text:'c',
-						value:'c'
-					},
-					{
-						text:'d',
-						value:'d'
-					},
-				],
-				value:'a'
-			}
-		},
-		onLoad() {
+import dorpdownItem from "../../components/src/dorpdown-item/index.vue";
+import dorpdownMenu from ".../../components/src/dropdown-menu/index.vue";
 
-		},
-		methods: {
-
-		}
-	}
+export default {
+  components: { popup, dorpdownMenu, dorpdownItem },
+  data() {
+    return {
+      title: "Hello",
+      show: false,
+      options: [
+        {
+          text: "a",
+          value: "a",
+        },
+        {
+          text: "b",
+          value: "b",
+        },
+        {
+          text: "c",
+          value: "c",
+        },
+        {
+          text: "d",
+          value: "d",
+        },
+      ],
+      options2: [
+        {
+          text: "4e324",
+          value: "4324",
+        },
+        {
+          text: "23432",
+          value: "2344b",
+        },
+        {
+          text: "432",
+          value: "32432",
+        },
+        {
+          text: "d43242",
+          value: "4324d",
+        },
+      ],
+      value: "a",
+      value2: "4324d",
+    };
+  },
+  onLoad() {},
+  methods: {},
+};
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin-top: 500px;
-	}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 200px;
+}
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
+.logo {
+  height: 200rpx;
+  width: 200rpx;
+  margin-top: 200rpx;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50rpx;
+}
 
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
+.text-area {
+  display: flex;
+  justify-content: center;
+}
 
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+.title {
+  font-size: 36rpx;
+  color: #8f8f94;
+}
 </style>

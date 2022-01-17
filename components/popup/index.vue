@@ -7,30 +7,16 @@
       :duration="duration"
       @click="onClickOverlay"
     />
-    <transition
-      @transitionend="onTransitionEnd"
-      name="fade"
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @after-enter="afterEnter"
-      @enter-cancelled="enterCancelled"
-      @before-leave="beforeLeave"
-      @leave="leave"
-      @after-leave="afterLeave"
-      @leave-cancelled="leaveCancelled"
-      appear
+    <view
+      v-if="show"
+      class="popup"
+      :class="['custom-class', position, round]"
+      :style="[{ zIndex }, customStyle]"
+      @touchmove.stop.prevent="noop"
+      @tap.stop.prevent="noop"
     >
-      <view
-        v-if="show"
-        class="popup"
-        :class="['custom-class', position, round]"
-        :style="[{ zIndex }, customStyle]"
-        @touchmove.stop.prevent="noop"
-        @tap.stop.prevent="noop"
-      >
-        <slot />
-      </view>
-    </transition>
+      <slot />
+    </view>
   </view>
 </template>
 
@@ -93,33 +79,33 @@ export default {
     },
   },
   mounted() {
-    console.log(this.customStyle,'customStyle');
+    console.log(this.customStyle, "customStyle");
   },
   methods: {
     beforeEnter() {
-      this.$emit('beforeEnter');
+      this.$emit("beforeEnter");
     },
     enter() {
-      this.$emit('enter');
+      this.$emit("enter");
     },
     afterEnter() {
-      this.$emit('afterEnter');
+      this.$emit("afterEnter");
     },
 
     enterCancelled() {
-      this.$emit('enterCancelled');
+      this.$emit("enterCancelled");
     },
     beforeLeave() {
-      this.$emit('beforeLeave');
+      this.$emit("beforeLeave");
     },
     leave() {
-      this.$emit('leave');
+      this.$emit("leave");
     },
     afterLeave() {
-      this.$emit('afterLeave');
+      this.$emit("afterLeave");
     },
     leaveCancelled() {
-      this.$emit('leaveCancelled');
+      this.$emit("leaveCancelled");
     },
 
     onClickCloseIcon() {
@@ -152,7 +138,10 @@ export default {
   -webkit-overflow-scrolling: touch;
   background-color: var(--popup-background-color, #fff);
 
-  transition: 0.3s ease transform;
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: transform;
+
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
 

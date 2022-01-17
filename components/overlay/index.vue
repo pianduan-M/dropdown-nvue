@@ -1,13 +1,13 @@
 <template>
-  <transition
-    :duration="duration"
-    name="fade"
-    appear
+  <view
+    @touchmove.stop.prevent="noop"
+    @tap.stop.prevent="onClick"
+    v-if="show"
+    class="overlay"
+    :style="[{ 'z-index': zIndex }, customStyle]"
   >
-    <view  @touchmove.stop.prevent="noop" @tap.stop.prevent="onClick" v-if="show" class="overlay"  :style="[{'z-index': zIndex},customStyle]">
-      <slot></slot>
-    </view>
-  </transition>
+    <slot></slot>
+  </view>
 </template>
 
 <script>
@@ -23,22 +23,22 @@ export default {
       type: Number,
       default: 1,
     },
-  position:{
-     type: String,
-      default: 'fixed',
-  }
+    position: {
+      type: String,
+      default: "fixed",
+    },
   },
   created() {
-    console.log(this.customStyle,'ssss');
+    console.log(this.customStyle, "ssss");
   },
   methods: {
     onClick() {
-      this.$emit('click');
+      this.$emit("click");
     },
     // for prevent touchmove
-    noop() { },
+    noop() {},
   },
-}
+};
 </script>
 
 <style scoped>
@@ -48,18 +48,16 @@ export default {
   left: 0;
   bottom: 0;
   width: 750rpx;
-  background-color: var(--overlay-background-color, rgba(0, 0, 0, 0.7));
-  transition: .3s ease opacity;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.overlay-enter-from,
+.overlay-leave-to {
   opacity: 0;
 }
 
-.fade-enter-to,
-.fade-leave-from {
+.overlay-enter-to,
+.overlay-leave-from {
   opacity: 1;
 }
-
 </style>
