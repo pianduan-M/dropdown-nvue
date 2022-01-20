@@ -118,10 +118,10 @@ export default {
   },
 
   beforeCreate() {
-    // const createEmitter = (eventName) => () => this.$emit(eventName);
-    // this.onOpen = createEmitter("open");
-    // this.onClose = createEmitter("close");
-    // this.onOpened = createEmitter("opened");
+    const createEmitter = (eventName) => () => this.$emit(eventName);
+    this.onOpen = createEmitter("open");
+    this.onClose = createEmitter("close");
+    this.onOpened = createEmitter("opened");
   },
 
   methods: {

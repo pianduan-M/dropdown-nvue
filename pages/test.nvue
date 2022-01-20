@@ -1,35 +1,55 @@
 <template>
 	<view class="test">
-		<!--    <dorpdown-menu>
-      <dorpdown-item :options="options" v-model="value"></dorpdown-item>
-      <dorpdown-item :options="options2" v-model="value2"></dorpdown-item>
-    </dorpdown-menu> -->
-		<popup :show="show" pos="top" :top="200" :height="50" @wxcPopupOverlayClicked="show=false"></popup>
-		<dorpdown style="margin-top:100px" :options="optionsArr" v-model="values"></dorpdown>
 
-		<view v-for="item in 2" v-if="show1" style="position:absolute;width:750rpx;height:100px;background-color:red;top:150px;z-index:2222;" @click="handleClick">
-			<text>打开</text> </view>
+
+
+		<dropdown-menu position="bottom">
+			<dropdown-item :options="options" v-model="value"></dropdown-item>
+			<dropdown-item :options="options2" v-model="value2"></dropdown-item>
+		</dropdown-menu>
+		
+
 	</view>
 </template>
 
+<style>
+
+  .test {
+    padding-top:300px;
+  }
+	.out {
+		width: 200rpx;
+		height: 200rpx;
+		background-color: #007AFF;
+		position:fixed;
+	}
+	
+	.inner {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		top: 0px;
+		background-color: #4CD964
+	}
+	
+</style>
+
 <script>
-	import dorpdownItem from "../components/src/dorpdown-item/index.vue";
-	import dorpdownMenu from "../components/src/dropdown-menu/index.vue";
-	import popup from "../components/popup/index.vue";
-	import dorpdown from './dorpdown.vue'
+
+	import dropdownItem from "../components/dropdown-item.vue";
+	import dropdownMenu from "../components/dropdown-menu.vue";
 
 	export default {
 		components: {
-			dorpdownMenu,
-			dorpdownItem,
-			popup,
-			dorpdown
+			dropdownMenu,
+			dropdownItem,
 		},
 		data() {
 			return {
 				title: "Hello",
 				show: false,
-				show1:true,
+				show1: true,
 				options: [{
 						text: "a",
 						value: "a",
@@ -66,7 +86,7 @@
 				],
 				value: "a",
 				value2: "4324d",
-				values:['a','4324','541654'],
+				values: ['a', '4324', '541654'],
 				optionsArr: [
 					[{
 							text: "a",
@@ -119,7 +139,7 @@
 							value: "4324d",
 						},
 					],
-					
+
 				],
 			};
 		},
@@ -141,10 +161,23 @@
 			},
 			handleClick() {
 				console.log('zhixingle');
+
+				animation.transition(this.$refs.bar, {
+					styles: {
+						opacity: 1
+					},
+					duration: 0,
+					delay: 0,
+
+				}, () => {
+
+				})
+
+
 				this.show = true
 			}
 		},
-		watch:{
+		watch: {
 			values(newValue) {
 				console.log(newValue);
 			}
@@ -157,6 +190,15 @@
 		height: 2000px;
 	}
 
+	.popup-container {
+		position: fixed;
+		top: 250px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+	}
+
 	.mask {
 		position: absolute;
 		top: 500rpx;
@@ -164,5 +206,6 @@
 		right: 0;
 		bottom: 0;
 		background-color: red;
+
 	}
 </style>
