@@ -37,8 +37,15 @@
           @touchstart="onClick(item)"
           :key="item.value"
           class="dropdwon-item__title"
+          :class="[titleClass]"
         >
-          <text class="dropdwon-item__label">{{ item.text }}</text>
+          <text
+            :style="value === item.value ? activeStyle : ''"
+            class="dropdwon-item__label"
+          >{{ item.text }}</text>
+          <view v-if="value === item.value">
+            <slot name="icon"></slot>
+          </view>
         </view>
         <slot></slot>
       </Popup>
@@ -70,12 +77,23 @@ export default {
       type: Array,
       default: () => [],
     },
+    customPopupStyle: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       transition: true,
       showPopup: false,
-      showWapper: false
+      showWapper: false,
+
     };
   },
 
@@ -92,7 +110,6 @@ export default {
       if (this.title) {
         return this.title;
       }
-
       const match = this.options.filter((option) => option.value === this.value);
       return match.length ? match[0].text : "";
     },
@@ -104,7 +121,7 @@ export default {
         };
       }
 
-      if (this.position === "down") {
+      if (this.position === "bottom") {
         return {
           top: 0,
           // bottom:this.parent.barRect.top + 'px'
@@ -115,11 +132,11 @@ export default {
 
     popupStyles() {
       if (this.position === "top") {
-        return { position: "absolute", top: 0, transform: `translateY(-100%)` };
+        return { position: "absolute", top: 0, transform: `translateY(-100%)`, ...this.customPopupStyle };
       }
 
-      if (this.position === "down") {
-        return { position: "absolute", transform: `translateY(100%)`, bottom: 0 };
+      if (this.position === "bottom") {
+        return { position: "absolute", transform: `translateY(100%)`, bottom: 0, ...this.customPopupStyle };
       }
     },
     overlayStyle() {
@@ -138,7 +155,7 @@ export default {
         };
       }
 
-      if (this.position === "down") {
+      if (this.position === "bottom") {
         return {
           enter: { transform: `translateY(0)` },
           leave: {
@@ -150,7 +167,7 @@ export default {
 
     position() {
       if (this.parent.direction) {
-        return this.parent.direction;
+        return this.parent.direction === 'up' ? 'bottom' : 'top';
       }
       return "top";
     },
@@ -175,6 +192,10 @@ export default {
       console.log(styles, 'styles');
 
       return styles
+    },
+
+    activeStyle() {
+      return `color:${this.parent.activeColor};`
     }
   },
 
@@ -230,7 +251,7 @@ export default {
     },
 
     onClick(item) {
-      this.showPopup = false
+      this.toggle(false)
       this.parent.onChange(item);
       this.$emit("input", item.value);
     },
@@ -250,19 +271,18 @@ export default {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background-color: red;
   box-sizing: border-box;
 }
 .dropdown-outsilde {
   position: fixed;
   left: 0;
   right: 0;
-  background-color: green;
 }
 
 .dropdwon-item__title {
   box-sizing: border-box;
   padding: 10px 20rpx;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 750rpx;
@@ -275,6 +295,5 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: center;
 }
 </style>

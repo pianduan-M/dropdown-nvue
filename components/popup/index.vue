@@ -48,9 +48,8 @@ under the License.
 <style scoped>
 .popup {
   position: fixed;
-  width: 750px;
-  background-color: pink;
- 
+  width: 750rpx;
+  background-color: #fff;
 }
 
 .wrapper {
@@ -171,7 +170,7 @@ export default {
       setTimeout(() => {
         this.appearPopup(this.show);
       }, 50);
-         console.log(this.show,'show');
+        
       return this.show;
     },
     _height() {

@@ -1,14 +1,9 @@
 <template>
 	<view class="test">
-
-
-
-		<dropdown-menu position="bottom">
-			<dropdown-item :options="options" v-model="value"></dropdown-item>
-			<dropdown-item :options="options2" v-model="value2"></dropdown-item>
+		<dropdown-menu direction="down">
+			<dropdown-item :options="options" v-model="value" title-class="title-class" ></dropdown-item>
+			<dropdown-item :options="options2" titleClass="title-class" :disabled="true" :custom-popup-style="popupStyle" v-model="value2"></dropdown-item>
 		</dropdown-menu>
-		
-
 	</view>
 </template>
 
@@ -141,6 +136,10 @@
 					],
 
 				],
+        popupStyle:{
+          'borderBottomLeftRadius':'10px',
+          'borderBottomRightRadius':'10px',
+        }
 			};
 		},
 		mounted() {
@@ -208,4 +207,8 @@
 		background-color: red;
 
 	}
+
+  .title-class {
+     justify-content: flex-end !important;
+  }
 </style>
