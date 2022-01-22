@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import Popup from "./popup";
+import Popup from "../popup";
 import { sortChildren } from "./utils";
 import { noop } from "./utils";
 

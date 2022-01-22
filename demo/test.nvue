@@ -32,8 +32,8 @@
 
 <script>
 
-	import dropdownItem from "../components/dropdown-item.vue";
-	import dropdownMenu from "../components/dropdown-menu.vue";
+	import dropdownItem from "../src/dropdown-item";
+	import dropdownMenu from "../src/dropdown-menu";
 
 	export default {
 		components: {
