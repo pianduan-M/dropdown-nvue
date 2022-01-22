@@ -22,7 +22,7 @@ under the License.
 <template>
   <view :class="[wrapperClass]" class="wrapper" v-if="show">
     <wxc-overlay
-      :show="show"
+      :show="overlay && show"
       ref="overlay"
       v-bind="overlayCfg"
       :duration="duration"
@@ -159,6 +159,16 @@ export default {
         return {};
       },
     },
+    overlay: {
+      type: Boolean,
+      default: true
+    },
+
+    closeOnClickOverlay: {
+      type: Boolean,
+      default: true,
+    },
+
   },
   data: () => ({
     haveOverlay: true,
@@ -170,7 +180,7 @@ export default {
       setTimeout(() => {
         this.appearPopup(this.show);
       }, 50);
-        
+
       return this.show;
     },
     _height() {
@@ -192,7 +202,7 @@ export default {
       pos === "top" &&
         (style = {
           ...style,
-          top: `${-height + stand }px`,
+          top: `${-height + stand}px`,
           height: `${height}px`,
         });
       pos === "bottom" &&
@@ -217,7 +227,7 @@ export default {
   beforeCreate() {
     this.noop = noop;
   },
-  mounted() {},
+  mounted() { },
   methods: {
     handleTouchEnd(e) {
       // 在支付宝上面有点击穿透问题
@@ -228,17 +238,26 @@ export default {
       this.appearPopup(false);
       this.$refs.overlay.appearOverlay(false);
     },
+
     overlayBodyClicking() {
+      if(!this.closeOnClickOverlay) return
+
       this.isShow && this.appearPopup(false);
     },
     appearPopup(bool) {
+      
+      if(bool) {
+        this.$emit('open')
+      } else {
+         this.$emit('close')
+      }
+      
       const duration = this.duration || 300
       this.isShow = bool;
       const popupEl = this.$refs["popup"];
       if (!popupEl) {
         return;
       }
-    
       let styles = {};
       // 自定义动画
       if (this.customAnimateStyles) {
@@ -267,9 +286,10 @@ export default {
             this.$emit("popupOverlayClicked", {
               pos: this.pos,
             });
+            this.$emit("closed");
             this.showPopup = false;
           } else {
-            this.$emit("opend");
+            this.$emit("opened");
           }
         }
       );

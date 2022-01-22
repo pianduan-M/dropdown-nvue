@@ -31,6 +31,10 @@
         @popupOverlayClicked="onOverlayClicked"
         @open="onOpen"
         @close="onClose"
+        :overlay="showOverlay"
+        :closeOnClickOverlay="closeOnClickOverlay"
+        @opened="onOpened"
+        @closed="onClosed"
       >
         <view
           v-for="item in options"
@@ -39,12 +43,18 @@
           class="dropdwon-item__title"
           :class="[titleClass]"
         >
+          <!-- <image
+            class="dropdown-item__icon"
+            :src="item.icon"
+            mode="scaleToFill"
+            v-if="item.icon"
+          /> -->
           <text
             :style="value === item.value ? activeStyle : ''"
             class="dropdwon-item__label"
           >{{ item.text }}</text>
           <view v-if="value === item.value">
-            <slot name="icon"></slot>
+            <slot name="active-icon"></slot>
           </view>
         </view>
         <slot></slot>
@@ -71,7 +81,6 @@ export default {
   props: {
     value: null,
     title: String,
-    disabled: Boolean,
     titleClass: String,
     options: {
       type: Array,
@@ -196,6 +205,14 @@ export default {
 
     activeStyle() {
       return `color:${this.parent.activeColor};`
+    },
+
+    showOverlay() {
+      return this.parent.overlay || true
+    },
+
+    closeOnClickOverlay() {
+      return this.parent.closeOnClickOverlay || true
     }
   },
 
@@ -209,6 +226,7 @@ export default {
     this.onOpen = createEmitter("open");
     this.onClose = createEmitter("close");
     this.onOpened = createEmitter("opened");
+    this.onClosed = createEmitter("closed");
     this.noop = noop;
   },
 
@@ -233,9 +251,9 @@ export default {
       this.transition = !options.immediate;
 
       if (!show) {
-        this.$refs.popupRef.appearPopup(false)
+        this.$refs.popupRef.hide()
         return
-      }
+      } 
 
       this.showPopup = show;
 
@@ -255,9 +273,12 @@ export default {
       this.parent.onChange(item);
       this.$emit("input", item.value);
     },
+
     onOutsideClick(e) {
       this.noop(e)
-      this.$refs.popupRef.appearPopup(false)
+
+      if (!this.parent.closeOnClickOutside) return
+      this.$refs.popupRef.hide()
     }
   },
 };
@@ -296,4 +317,10 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* 
+.dropdwon-item__title  .dropdown-item__icon {
+  width: 50rpx;
+  height: 50rpx;
+} */
+ 
 </style>

@@ -2,7 +2,7 @@
   <view>
     <view
       ref="bar"
-      :style="[barStyle,]"
+      :style="[barStyle,customStyle]"
       class="dropdown-menu__bar"
       @touchstart="noop"
       @touchmove="noop"
@@ -51,16 +51,23 @@ export default {
     },
     duration: {
       type: [Number, String],
-      default: 300,
+      default: 200,
     },
     direction: {
       type: String,
       default: 'down',
     },
+
     closeOnClickOverlay: {
       type: Boolean,
       default: true,
     },
+
+    closeOnClickOutside: {
+      type: Boolean,
+      default: true,
+    },
+
     customStyle: {
       type: Object,
     },
@@ -92,11 +99,6 @@ export default {
     },
 
     barStyle() {
-      // if (this.opened) {
-      //   return {
-      //     zIndex: 1 + this.zIndex,
-      //   };
-      // }
       return {
         [this.direction === 'down' ? 'borderBottomWidth' : 'borderTopWidth']: '1px',
 
@@ -132,6 +134,7 @@ export default {
         }
       });
     },
+
     onChange(item) {
       this.$emit('change', item)
     },
@@ -155,37 +158,6 @@ export default {
       }
 
       return styles[this.direction]
-
-      // if (this.direction === 'down') {
-
-      //   if (chidren.showPopup) {
-      //     return {
-      //       color: this.activeColor,
-      //       transform: 'rotate(180deg)'
-      //     }
-      //   } else {
-      //     return {
-      //       transform: "rotate(0deg)",
-      //     }
-      //   }
-
-      // }
-
-      // if (this.direction === 'up') {
-
-      //   if (chidren.showPopup) {
-      //     return {
-      //       color: this.activeColor,
-      //       transform: 'rotate(0deg)'
-      //     }
-      //   } else {
-      //     return {
-      //       transform: 'rotate(-180deg)'
-      //     }
-      //   }
-
-      // }
-
     }
   },
   mounted() { },
