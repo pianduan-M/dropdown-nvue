@@ -65,8 +65,8 @@
 
 <script>
 import Popup from "../popup";
-import { sortChildren } from "./utils";
-import { noop } from "./utils";
+import { sortChildren,noop } from "../utils";
+
 
 export default {
   components: {

@@ -30,7 +30,7 @@
 const dom = uni.requireNativePlugin("dom");
 import {
   noop
-} from './utils'
+} from '../utils'
 
 export default {
   name: 'dropdown-menu',
